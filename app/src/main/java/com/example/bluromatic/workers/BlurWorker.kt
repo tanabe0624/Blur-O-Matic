@@ -1,5 +1,6 @@
 package com.example.bluromatic.workers
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -19,6 +20,7 @@ import kotlinx.coroutines.withContext
 private const val TAG = "BlurWork"
 
 class BlurWorker(ctx: Context, params:WorkerParameters)  : CoroutineWorker(ctx, params){
+    @SuppressLint("SuspiciousIndentation")
     override suspend fun doWork(): Result {
 
         val resourceUri = inputData.getString(KEY_IMAGE_URI)
