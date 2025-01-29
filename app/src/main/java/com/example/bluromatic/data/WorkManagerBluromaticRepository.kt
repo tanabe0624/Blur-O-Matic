@@ -18,6 +18,7 @@ package com.example.bluromatic.data
 
 import android.content.Context
 import android.net.Uri
+//import androidx.compose.ui.unit.Constraints
 import androidx.lifecycle.asFlow
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
@@ -36,6 +37,7 @@ import com.example.bluromatic.workers.SaveImageToFileWorker
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapNotNull
+import androidx.work.Constraints
 
 class WorkManagerBluromaticRepository(context: Context) : BluromaticRepository {
 
@@ -58,8 +60,13 @@ class WorkManagerBluromaticRepository(context: Context) : BluromaticRepository {
                 ExistingWorkPolicy.REPLACE,
                 OneTimeWorkRequest.from(CleanupWorker::class.java)
             )
+        val constraints = Constraints.Builder()
+            .setRequiresBatteryNotLow(true)
+            .build()
+
         val blurBuilder = OneTimeWorkRequestBuilder<BlurWorker>()//Create WorkRequest to blur the image
         blurBuilder.setInputData(createInputDataForWorkRequest(blurLevel, imageUri))
+        blurBuilder.setConstraints(constraints)
         continuation = continuation.then(blurBuilder.build())
 
         val save = OneTimeWorkRequestBuilder<SaveImageToFileWorker>()
